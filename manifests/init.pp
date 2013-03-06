@@ -10,5 +10,8 @@
 
 class vim {
   require vim::setup
-  package { 'vim': }
+  package { 'mercurial': }
+  package { 'vim':
+    require => Package['mercurial']
+  }
 }
