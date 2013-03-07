@@ -1,6 +1,6 @@
 # vim Puppet Module for Boxen
 
-Install [vim](http://www.vim.org/) among with [vim-pathogen](https://github.com/tpope/vim-pathogen) and an easy way to install vim bundles.
+Install [vim](http://www.vim.org/) along with [vim-pathogen](https://github.com/tpope/vim-pathogen), an easy way to install vim bundles.
 
 This package won't interfere the puppet-macvim package.
 
