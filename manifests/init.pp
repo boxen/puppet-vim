@@ -10,5 +10,9 @@
 
 class vim {
   require vim::setup
-  package { 'vim': }
+  package { 'vim':
+    require => Package['mercurial']
+  }
+  # Install mercurial since the vim brew package don't satisfy the requirement
+  package { 'mercurial': }
 }
