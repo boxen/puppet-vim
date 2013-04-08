@@ -30,5 +30,11 @@ describe 'vim' do
       'ensure'    => 'directory',
       'recurse' => true,
     })
+    should contain_file_line('load_pathogen').with({
+      'ensure'  => 'present',
+      'line'    => 'execute pathogen#infect()',
+      'path'    => '/Users/jhaals/.vimrc',
+      'require' => 'File[/Users/jhaals/.vimrc]',
+    })
     end
 end

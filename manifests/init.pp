@@ -1,13 +1,13 @@
-# Public: Install vim and vim-pathogen if you use bundles
-#
+# Installs vim and vim-pathogen
+# This class require that you're .vimrc is managed by puppet
+
 # Examples
 #
 #   include vim
 #   vim::bundle { 'syntastic':
 #     source => 'scrooloose/syntastic',
 #   }
-# There's an optional home_dir parameter if you use a custom home directory.
-
+#
 class vim {
 
   package { 'vim':
@@ -35,5 +35,13 @@ class vim {
       File["/Users/${::boxen_user}/.vim/bundle"],
       Repository["/Users/${::boxen_user}/.vim/vim-pathogen"]
     ]
+  }
+
+  # Install pathogen into .vimrc
+  file_line { 'load_pathogen':
+    ensure  => present,
+    line    => 'execute pathogen#infect()',
+    path    => "/Users/${::boxen_user}/.vimrc",
+    require => File["/Users/${::boxen_user}/.vimrc"]
   }
 }
