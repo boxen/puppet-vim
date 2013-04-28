@@ -10,14 +10,19 @@ This package won't interfere the puppet-macvim package. Please note that you __m
 The following example will install vim, pathogen and the vim_bundle you specify in your ~/.vim/bundle directory
 
     include vim
-    vim::bundle { 'scrooloose/syntastic': }
-    vim::bundle { 'sjl/gundo.vim: }
+    vim::bundle { [
+      'scrooloose/syntastic',
+      'sjl/gundo.vim'
+    ]: }
 
     # Example of how you can manage your .vimrc
-    file { "/Users/${::boxen_user}/.vimrc":
+    file { "${vim::vimrc}":
       target  => "/Users/${::boxen_user}/.dotfiles/.vimrc",
       require => Repository["/Users/${::boxen_user}/.dotfiles"]
     }
+
+    # Or, simply,
+    file { "${vim::vimrc}": ensure => exists }
 
 ## Required Puppet Modules
 
