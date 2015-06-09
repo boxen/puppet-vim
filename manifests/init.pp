@@ -8,10 +8,13 @@
 #     source => 'scrooloose/syntastic',
 #   }
 #
-class vim {
+class vim ($bundles = []) 
+{
   $home = "/Users/${::boxen_user}"
   $vimrc = "${home}/.vimrc"
   $vimdir = "${home}/.vim"
+
+  vim::bundle{$bundles: }
 
   package { 'vim':
     require => Package['mercurial']
