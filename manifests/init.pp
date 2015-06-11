@@ -8,26 +8,32 @@
 #     source => 'scrooloose/syntastic',
 #   }
 #
-class vim ($bundles = []) 
+class vim ($bundles = [],
+  $perform_install = true,
+  $home = "/Users/${::boxen_user}")
 {
-  $home = "/Users/${::boxen_user}"
   $vimrc = "${home}/.vimrc"
   $vimdir = "${home}/.vim"
 
   vim::bundle{$bundles: }
 
-  package { 'vim':
-    require => Package['mercurial']
-  }
-  # Install mercurial since the vim brew package don't satisfy the requirement (vim is fetched using $ hg)
-  package { 'mercurial':
-    require => Package['docutils']
-  }
-  # docutils is required by mercurial.
-  # https://github.com/boxen/puppet-vim/issues/12
-  package { 'docutils':
-    ensure   => installed,
-    provider => pip,
+  # Sometimes there is no way we can install those and
+  # we simply pickup what's on the system.
+  if $perform_install {
+    package { 'vim':
+      require => Package['mercurial']
+    }
+    # Install mercurial since the vim brew package don't satisfy the
+    # requirement (vim is fetched using $ hg)
+    package { 'mercurial':
+      require => Package['docutils']
+    }
+    # docutils is required by mercurial.
+    # https://github.com/boxen/puppet-vim/issues/12
+    package { 'docutils':
+      ensure   => installed,
+      provider => pip,
+    }
   }
 
   file { [$vimdir,
