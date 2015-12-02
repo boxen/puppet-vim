@@ -8,12 +8,18 @@
 #     source => 'scrooloose/syntastic',
 #   }
 #
-class vim {
+class vim (
+  $ensure = present,
+  $install_options = '--override-system-vi',
+) {
   $home = "/Users/${::boxen_user}"
   $vimrc = "${home}/.vimrc"
   $vimdir = "${home}/.vim"
 
-  package { 'vim': }
+  package { 'vim': 
+    ensure => $ensure,
+    install_options => $install_options,
+  }
 
   if ! defined(Class['spf13vim3']) {
     file { [$vimdir,
