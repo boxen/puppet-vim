@@ -8,43 +8,40 @@
 #     source => 'scrooloose/syntastic',
 #   }
 #
-class vim {
+class vim (
+  $ensure = present,
+  $install_options = '--override-system-vi',
+) {
   $home = "/Users/${::boxen_user}"
   $vimrc = "${home}/.vimrc"
   $vimdir = "${home}/.vim"
 
-  package { 'vim':
-    require => Package['mercurial']
-  }
-  # Install mercurial since the vim brew package don't satisfy the requirement (vim is fetched using $ hg)
-  package { 'mercurial':
-    require => Package['docutils']
-  }
-  # docutils is required by mercurial.
-  # https://github.com/boxen/puppet-vim/issues/12
-  package { 'docutils':
-    ensure   => installed,
-    provider => pip,
+  package { 'vim': 
+    ensure => $ensure,
+    install_options => $install_options,
   }
 
-  file { [$vimdir,
-    "${vimdir}/autoload",
-    "${vimdir}/bundle"]:
-    ensure  => directory,
-    recurse => true,
+  if ! defined(Class['spf13vim3']) {
+    file { [$vimdir,
+      "${vimdir}/autoload",
+      "${vimdir}/bundle"]:
+      ensure  => directory,
+      recurse => true,
+    }
+
+    repository { "${vimdir}/vim-pathogen":
+      source => 'tpope/vim-pathogen'
+    }
+
+    file { "${vimdir}/autoload/pathogen.vim":
+      target  => "${vimdir}/vim-pathogen/autoload/pathogen.vim",
+      require => [
+        File[$vimdir],
+        File["${vimdir}/autoload"],
+        File["${vimdir}/bundle"],
+        Repository["${vimdir}/vim-pathogen"]
+      ]
+    }
   }
 
-  repository { "${vimdir}/vim-pathogen":
-    source => 'tpope/vim-pathogen'
-  }
-
-  file { "${vimdir}/autoload/pathogen.vim":
-    target  => "${vimdir}/vim-pathogen/autoload/pathogen.vim",
-    require => [
-      File[$vimdir],
-      File["${vimdir}/autoload"],
-      File["${vimdir}/bundle"],
-      Repository["${vimdir}/vim-pathogen"]
-    ]
-  }
 }
